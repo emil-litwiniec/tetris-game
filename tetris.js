@@ -146,11 +146,12 @@ const iShape = [[[0, 1, 0, 0],
 xp = yp = 0; // x position, y position
 sl = step = 20 // SIDE LENGTH of a single square AND grid step
 
-testMap = [[0,19], [1,19], [2,19], [3,19], [4,19], [5,19], [6,19], [7,19], [8,19],[0,18], [1,18], [2,18], [3,18], [4,18], [5,18], [6,18], [7,18], [8,18]];
+testMap = [];
 
 let shapePosition = [];
 let rotatePosition = 0;
 let actualShape;
+let score = 0;
 
 ctx.beginPath();
 ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -199,6 +200,13 @@ function createShapeCoords(shape) {
     }
 }
 
+
+function isGameOver() {
+    if(testMap.some(coords => coords[1] === 0)) {
+        resetGame();
+    }
+}
+
 function clearShape() {
     shapePosition.forEach(coords => {
         let x = coords[0] * step;
@@ -235,18 +243,29 @@ function moveToPreviousPosition(previousPosition) {
 }
 function moveRight() {
     clearShape();
+    if(shapePosition.some(coords => coords[0] === 9)) {
+        null;
+    } else {
     shapePosition.forEach(coords => {
-         coords[0] = coords[0] + 1;
+        
+            coords[0] = coords[0] + 1;
     });
+    }
     render(shapePosition);
     check();
 }
 
 function moveLeft() {
     clearShape();
+
+    if(shapePosition.some(coords => coords[0] === 0)) {
+        null;
+    } else {
     shapePosition.forEach(coords => {
-         coords[0] = coords[0] + -1;
+        
+            coords[0] = coords[0] + -1;
     });
+    }
 
     render(shapePosition);
     check();
@@ -294,6 +313,7 @@ function check() {
         createShapeCoords(actualShape);
         render(shapePosition);
         checkRow();
+        isGameOver();
     }
 
 }
@@ -303,15 +323,12 @@ function checkRow() {
     let counter = [];
     for(let i = 0; i < 20; i++) {
         testMap.forEach(coords => {
-            // console.log(coords[1]);
             if (coords[1] === i){
-                // console.log(i);
                 counter.push(i);
             }
         })
     }
     
-    console.log(counter);
     let current = null;
     let cnt = 0;
     for (let i = 0; i < counter.length; i++) {
@@ -336,32 +353,22 @@ function checkRow() {
 
 function deleteFullRows() {
     let newMap;
-
-
-    // for(let j = 0; j < fullRows.length; j++) {
-    //     console.log('hej', j);
-    //     for(let i = 0; i < testMap.length; i++) {
-    //         console.log(i, testMap[i][1]);
-    //         if(testMap[i][1] == fullRows[j] ){
-    //             // console.log(testMap[i]);
-    //             testMap.splice(i, 1);
-    //         };
-    //     }
-    // }
     fullRows.forEach(row => {
-        console.log(row);
         newMap = testMap.filter(coords => coords[1] !== row);
         testMap = newMap;
-
-
+        testMap.forEach(coords => {
+            if(coords[1] < row) {
+                coords[1] = coords[1] + 1;
+            }
+        })
     });
-        
-    
-
-    // fullRows = [];
+    let scoreMultiplier = fullRows.length*1.3;
+    fullRows = [];
     clearCanvas();
     render(shapePosition);
     render(testMap);
+    score = score + (250 * scoreMultiplier);
+    console.log(`Your score is ${score}.`);
 }
 
 function clearCanvas() {
@@ -370,6 +377,12 @@ function clearCanvas() {
     ctx.fillStyle = "#00B962";
     ctx.fill();
     ctx.fillStyle = "#003511";
+}
+
+function resetGame() {
+    testMap = [];
+    score = 0;
+    clearCanvas();
 }
 
 function drawSquare(xp, yp, color) {
@@ -385,9 +398,13 @@ function drawSquare(xp, yp, color) {
     ctx.stroke();
     ctx.closePath();
 }
+
+// function stopGame() {
+
+// }
 check();
 setActualShape();
 createShapeCoords(actualShape);
 render(shapePosition, '#003511');
 render(testMap);
-// setInterval(moveDown, 400);
+setInterval(moveDown, 400);
