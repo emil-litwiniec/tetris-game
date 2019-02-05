@@ -2,10 +2,48 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 
-    background-color: black;
+    background-color: #00B962;
+    font-family: 'VT323', monospace;
+    color: #d9ffe5;
+    
 }
 #canvas {
-    /* border: 2px solid red; */
+    border: 4px solid #003511;
     border-radius: 2px;
+    cursor: pointer;
+}
+
+.header-1 {
+    font-size: 80px;
+    
+}
+
+.instructions {
+    text-align: right;
+    font-size: 20px;
+    padding-left: 20px;
+}
+.instructions__box {
+    margin-top: 150px;
+}
+.score {
+    text-align: right;
+    font-size: 40px;
+    padding-left: 20px;
+}
+
+.highscore {
+    text-align: right;
+    font-size: 40px;
+    padding-left: 20px;
+}
+
+
+
+.game {
+    display: flex;
+    justify-content: space-between;
+
 }

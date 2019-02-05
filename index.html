@@ -3,11 +3,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://fonts.googleapis.com/css?family=VT323" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <title>Document</title>
 </head>
 <body>  
-    <canvas id="canvas" width="400" height="800" style="background-color: white; opacity: 1;"></canvas>
+    <main class="main">
+        <h1 class="header-1">My tetris game.</h1>
+        <div class="game">
+            <canvas id="canvas" width="300" height="600" "></canvas>
+            <div class="menu">
+                <p class="score">score: 0</p>
+                <p class="highscore">high score: 0</p>
+                <div class="instructions__box">
+                    <p class="instructions">press 'P' or click on<br> the board to play/pause</p>
+                    <p class="instructions">press 'R' to reset the game</p>
+                    <p class="instructions">press '→' to move right</p>
+                    <p class="instructions">press '←' to move left</p>
+                    <p class="instructions">press '	&#x2191;' to rotate</p>
+                    <p class="instructions">press '↓' to fall faster</p>
+                </div>
+            </div>
+        </div>
+    </main>
 
     <script src="tetris.js"></script>
 </body>

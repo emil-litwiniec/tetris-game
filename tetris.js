@@ -2,21 +2,35 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 window.addEventListener('keydown', e => {
+    console.log(e.keyCode);
     switch(e.keyCode) {
         case 37: 
+            e.preventDefault();
             moveLeft();
             break;     
         case 38:
+        e.preventDefault();
             rotateShape();
             break;
         case 39:
+        e.preventDefault();
             moveRight();
             break;
         case 40:
+        e.preventDefault();
             moveDown();
+            break;
+        case 80:
+        e.preventDefault();
+            toggleOn();
+            break;
+        case 82: 
+        e.preventDefault();
+            resetGame();
             break;
     }
 })
+
 
 const tShape = [[[0, 1, 0],
                 [1, 1, 1],
@@ -124,19 +138,24 @@ const iShape = [[[0, 1, 0, 0],
                  [0, 0, 0, 0]]
                 ];
 xp = yp = 0; // x position, y position
-sl = step = 40 // SIDE LENGTH of a single square AND grid step
+sl = step = 30 // SIDE LENGTH of a single square AND grid step
 
 testMap = [];
 
+
+const color1 = '#003511';
+const color2 = '#00B962';
 let shapePosition = [];
 let rotatePosition = 0;
 let actualShape;
 let score = 0;
+let highscore = 0;
 
 ctx.beginPath();
 ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
-ctx.fillStyle = "#00B962";
+ctx.fillStyle = color1;
 ctx.fill();
+
 
 function setActualShape() {
 switch (getRandomInt(6)) {
@@ -167,14 +186,6 @@ switch (getRandomInt(6)) {
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
   }
-let preventRotate = shapePosition.some(coords => {
-
-
-
-})
-
-
-
 function createShapeCoords(shape) {
     for (let i = 0; i < shape[rotatePosition].length; i++) {
         for(let j = 0; j < shape[rotatePosition][i].length; j++) {
@@ -207,9 +218,9 @@ function clearShape() {
     shapePosition.forEach(coords => {
         let x = coords[0] * step;
         let y = coords[1] * step;
-        ctx.fillStyle = '#00B962';
+        ctx.fillStyle = color1;
         ctx.fillRect(x, y, sl + 1, sl +1);
-        ctx.fillStyle = '#003511';
+        ctx.fillStyle = color2;
     })
 }
 function findDuplicate(arr) {
@@ -244,7 +255,6 @@ function simulateBut() {
     let fakeMap = [...testMap];
 
     let fakePreviousPosition = fakePosition = [...shapePosition];
-    // fakeClearShape();
     fakePosition = [];
     fakeRotatePosition++;
     if(fakeRotatePosition === actualShape.length) {
@@ -286,11 +296,6 @@ function simulateBut() {
         })
     })}
     ringa();
-
-    // console.log(`fakeRotatePosition: ${fakeRotatePosition} 
-    // rotatePosition: ${rotatePosition} previousPosition: ${fakePreviousPosition} 
-    // fakePosition: ${fakePosition} shapePosition:${shapePosition}`)
-
     return cont;
 }
 
@@ -301,25 +306,14 @@ function rotateShape() {
     clearShape();
     shapePosition = [];
 
-    console.log(previousPosition, shapePosition);
     rotatePosition++;
     if(rotatePosition === actualShape.length) {
         rotatePosition = 0;
     }
     createShapeCoords(actualShape);
     moveToPreviousPosition(previousPosition);
-    // console.log(shapePosition);
-    // if(shapePosition.forEach(coords => {
-    //     testMap.forEach(mapCoords => mapCoords === coords)
-    // })){
-    //     console.log('auauaua!');
-    // }
     shapePosition.forEach(coords => {
-        // console.log(coords);
         testMap.forEach(mapCoords => {
-            // console.log('hej', mapCoords, coords);
-            // console.log(mapCoords[0] == coords[0]);
-
             if(mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) {
                 return false;
                 
@@ -343,17 +337,6 @@ function moveToPreviousPosition(previousPosition) {
     })
 }
 
-
-// let ringa = () => {shapePosition.forEach(coords => {
-//     testMap.forEach(mapCoords => {
-        
-//         if((mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) || 
-//             coords[0] > 9 || coords[0] < 0 ) {
-//             cont =  false;
-//         }
-//     })
-// })}
-// let cont = true;
 let ringa = (direction) => {
     if(direction == 'right') {
         direction = 1;
@@ -421,11 +404,11 @@ function moveDown() {
     check();
 }
 function render(coordsArr, color) {
-    // ctx.clearRect(0,0, ctx.canvas.width, ctx.canvas.height);
     coordsArr.forEach(coords => {
         let x = coords[0];
         let y = coords[1];
         drawSquare(x, y, color);
+        drawDots(x, y);
     });
 }
 function check() {
@@ -504,49 +487,119 @@ function deleteFullRows() {
             }
         })
     });
-    let scoreMultiplier = fullRows.length*1.3;
+    let scoreMultiplier = fullRows.length * fullRows.length;
     fullRows = [];
     clearCanvas();
     render(shapePosition);
     render(testMap);
     score = score + (250 * scoreMultiplier);
     console.log(`Your score is ${score}.`);
+    updateScore();
 }
 
 function clearCanvas() {
     ctx.beginPath();
     ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = "#00B962";
+    ctx.fillStyle = color1;
     ctx.fill();
-    ctx.fillStyle = "#003511";
+    ctx.fillStyle = color2;
 }
 
 function resetGame() {
     testMap = [];
+    shapePosition = [];
+    updateHighScore();
     score = 0;
+    updateScore();
     clearCanvas();
+    setActualShape();
+    rotatePosition = 0;
+    createShapeCoords(actualShape);
+    centerNewShape();
+    render(shapePosition);
+    checkRow();
+}
+
+function drawDots(xp, yp) {
+    let cXp = xp * step;
+    let cYp = yp * step;
+    
+   
+    // ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx.fillRect(cXp, cYp, 4, 4);
+    // ctx.fillStyle = color;
+    // ctx.closePath();
+    
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(cXp + sl - 4, cYp, 4, 4);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(cXp + sl - 4,cYp + sl - 4, 4, 4);
+    ctx.closePath();
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(cXp, cYp + sl - 4, 4, 4);
+    ctx.closePath();
+    ctx.fillStyle = color2;
 }
 
 function drawSquare(xp, yp, color) {
     let cXp = xp * step;
     let cYp = yp * step;
-
+    // ctx.beginPath();
     ctx.fillStyle = color;
     ctx. fillRect(cXp, cYp, sl, sl);
+   
     ctx.beginPath();
-    ctx.lineWidth = "5";
-    ctx.strokeStyle = "#00B962";
+    ctx.lineWidth = "4";
+    ctx.strokeStyle = color1;
     ctx.rect(cXp  , cYp , sl  , sl ); 
     ctx.stroke();
     ctx.closePath();
 }
-
-// function stopGame() {
-
-// }
 check();
 setActualShape();
 createShapeCoords(actualShape);
-render(shapePosition, '#003511');
+render(shapePosition, color2);
 render(testMap);
-setInterval(moveDown, 450);
+
+const updateScore = () => {
+    let scorePoints = document.querySelector('.score');
+    scorePoints.innerText = `score: ${score}`
+}
+
+const updateHighScore = () => {
+    let highScorePoints = document.querySelector('.highscore');
+    if(score > highscore) {
+    highscore = score;
+    highScorePoints.innerText = `high score: ${highscore}`
+    }
+}
+
+
+let intervalId;
+let isOn = false;
+
+let toggleOn = () => {
+    if(!isOn) {
+        play()
+    } else {
+        stop();
+    }
+}
+
+let play = () => {
+    
+    intervalId = setInterval(moveDown, 450);
+    updateScore();
+    isOn = !isOn;
+}
+let stop = () =>{ 
+    clearInterval(intervalId);
+    isOn = !isOn;
+};
+
+canvas.addEventListener('click', toggleOn);
