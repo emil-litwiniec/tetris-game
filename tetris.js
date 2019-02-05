@@ -124,7 +124,7 @@ const iShape = [[[0, 1, 0, 0],
                  [0, 0, 0, 0]]
                 ];
 xp = yp = 0; // x position, y position
-sl = step = 20 // SIDE LENGTH of a single square AND grid step
+sl = step = 40 // SIDE LENGTH of a single square AND grid step
 
 testMap = [];
 
@@ -277,15 +277,11 @@ function simulateBut() {
     fakeMoveToPreviousPosition(fakePreviousPosition);
 
     let ringa = () => {fakePosition.forEach(coords => {
-        // console.log(coords);
         fakeMap.forEach(mapCoords => {
-            // console.log('hej', mapCoords, coords);
-            // console.log(mapCoords[0] == coords[0]);
-
+            
             if((mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) || 
                 coords[0] > 9 || coords[0] < 0 ) {
                 cont =  false;
-                
             }
         })
     })}
@@ -346,9 +342,45 @@ function moveToPreviousPosition(previousPosition) {
 
     })
 }
+
+
+// let ringa = () => {shapePosition.forEach(coords => {
+//     testMap.forEach(mapCoords => {
+        
+//         if((mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) || 
+//             coords[0] > 9 || coords[0] < 0 ) {
+//             cont =  false;
+//         }
+//     })
+// })}
+// let cont = true;
+let ringa = (direction) => {
+    if(direction == 'right') {
+        direction = 1;
+    } else if (direction == 'left') {
+        direction = -1;
+    }
+    // const left = -1;
+    let cont = false;
+    shapePosition.forEach(coords => {
+    testMap.forEach(mapCoords => {
+
+            if(mapCoords[0] === (coords[0] + direction) && mapCoords[1] === coords[1]) {
+            cont = true;
+            }
+        })
+
+    });
+
+    return cont;
+}
+
 function moveRight() {
     clearShape();
+    let direction = 'right';
     if(shapePosition.some(coords => coords[0] === 9)) {
+        null;
+    } else if (ringa(direction)) {
         null;
     } else {
     shapePosition.forEach(coords => {
@@ -362,8 +394,11 @@ function moveRight() {
 
 function moveLeft() {
     clearShape();
+    let direction = 'left';
 
     if(shapePosition.some(coords => coords[0] === 0)) {
+        null;
+    } else if(ringa(direction)){
         null;
     } else {
     shapePosition.forEach(coords => {
@@ -499,7 +534,7 @@ function drawSquare(xp, yp, color) {
     ctx.fillStyle = color;
     ctx. fillRect(cXp, cYp, sl, sl);
     ctx.beginPath();
-    ctx.lineWidth = "2";
+    ctx.lineWidth = "5";
     ctx.strokeStyle = "#00B962";
     ctx.rect(cXp  , cYp , sl  , sl ); 
     ctx.stroke();
@@ -514,4 +549,4 @@ setActualShape();
 createShapeCoords(actualShape);
 render(shapePosition, '#003511');
 render(testMap);
-setInterval(moveDown, 400);
+setInterval(moveDown, 450);
