@@ -107,21 +107,11 @@ const oShape = [[[0, 0, 0, 0],
                  [0, 1, 1, 0],
                  [0, 1, 1, 0],
                  [0, 0, 0, 0]],
-                
-                 [[0, 0, 0, 0],
-                 [0, 1, 1, 0],
-                 [0, 1, 1, 0],
-                 [0, 0, 0, 0]],
 
                  [[0, 0, 0, 0],
                  [0, 1, 1, 0],
                  [0, 1, 1, 0],
-                 [0, 0, 0, 0]],
-
-                 [[0, 0, 0, 0],
-                 [0, 1, 1, 0],
-                 [0, 1, 1, 0],
-                 [0, 0, 0, 0]],
+                 [0, 0, 0, 0]]
                 ];
 const iShape = [[[0, 1, 0, 0],
                  [0, 1, 0, 0],
@@ -131,17 +121,7 @@ const iShape = [[[0, 1, 0, 0],
                  [[0, 0, 0, 0],
                  [1, 1, 1, 1],
                  [0, 0, 0, 0],
-                 [0, 0, 0, 0]],
-
-                 [[0, 1, 0, 0],
-                 [0, 1, 0, 0],
-                 [0, 1, 0, 0],
-                 [0, 1, 0, 0]],
-
-                 [[0, 0, 0, 0],
-                 [1, 1, 1, 1],
-                 [0, 0, 0, 0],
-                 [0, 0, 0, 0]],
+                 [0, 0, 0, 0]]
                 ];
 xp = yp = 0; // x position, y position
 sl = step = 20 // SIDE LENGTH of a single square AND grid step
@@ -187,6 +167,12 @@ switch (getRandomInt(6)) {
 function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
   }
+let preventRotate = shapePosition.some(coords => {
+
+
+
+})
+
 
 
 function createShapeCoords(shape) {
@@ -198,6 +184,16 @@ function createShapeCoords(shape) {
             }
         }
     }
+    
+}
+
+
+function centerNewShape() {
+    shapePosition.forEach(coords => {
+        if(shapePosition.some(coords => coords[1] <= 1)){
+        coords[0] = coords[0] + 3;
+        }
+    });
 }
 
 
@@ -215,21 +211,130 @@ function clearShape() {
         ctx.fillRect(x, y, sl + 1, sl +1);
         ctx.fillStyle = '#003511';
     })
+}
+function findDuplicate(arr) {
+    const object = {};
+    const result = [];
+
+    arr.forEach(item => {
+      if(!object[item])
+          object[item] = 0;
+        object[item] += 1;
+    }
+    )
+
+    for(const prop in object) {
+       if(object[prop] >= 2) {
+           result.push(prop);
+       }
+    }
+
+    if (result.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+let fakeRotatePosition = rotatePosition;
+
+function simulateBut() {
+    let fakeMap = [...testMap];
+
+    let fakePreviousPosition = fakePosition = [...shapePosition];
+    // fakeClearShape();
+    fakePosition = [];
+    fakeRotatePosition++;
+    if(fakeRotatePosition === actualShape.length) {
+       fakeRotatePosition = 0;
+    }
+    function fakeCreateShapeCoords(shape) {
+        for (let i = 0; i < shape[fakeRotatePosition].length; i++) {
+            for(let j = 0; j < shape[fakeRotatePosition][i].length; j++) {
+                if(shape[fakeRotatePosition][i][j]) {
+                    let arr = [j, i];
+                    fakePosition.push(arr);
+                }
+            }
+        }
+        
+    }
+    function fakeMoveToPreviousPosition(fakePreviousPosition) {
+        let previousX = fakePreviousPosition[3][0];
+        let previousY = fakePreviousPosition[3][1];
+        fakePosition.forEach(coords => {
+            coords[0] = coords[0] + previousX - 1;
+            coords[1] = coords[1] + previousY - 1;
     
+        })
+    }
+  
+    let cont = true;
+
+    fakeCreateShapeCoords(actualShape);
+    fakeMoveToPreviousPosition(fakePreviousPosition);
+
+    let ringa = () => {fakePosition.forEach(coords => {
+        // console.log(coords);
+        fakeMap.forEach(mapCoords => {
+            // console.log('hej', mapCoords, coords);
+            // console.log(mapCoords[0] == coords[0]);
+
+            if((mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) || 
+                coords[0] > 9 || coords[0] < 0 ) {
+                cont =  false;
+                
+            }
+        })
+    })}
+    ringa();
+
+    // console.log(`fakeRotatePosition: ${fakeRotatePosition} 
+    // rotatePosition: ${rotatePosition} previousPosition: ${fakePreviousPosition} 
+    // fakePosition: ${fakePosition} shapePosition:${shapePosition}`)
+
+    return cont;
 }
 
 function rotateShape() {
+    fakeRotatePosition = rotatePosition;
+    if(simulateBut()){
     let previousPosition = shapePosition;
     clearShape();
     shapePosition = [];
+
+    console.log(previousPosition, shapePosition);
     rotatePosition++;
-    if(rotatePosition === 4) {
+    if(rotatePosition === actualShape.length) {
         rotatePosition = 0;
     }
     createShapeCoords(actualShape);
     moveToPreviousPosition(previousPosition);
+    // console.log(shapePosition);
+    // if(shapePosition.forEach(coords => {
+    //     testMap.forEach(mapCoords => mapCoords === coords)
+    // })){
+    //     console.log('auauaua!');
+    // }
+    shapePosition.forEach(coords => {
+        // console.log(coords);
+        testMap.forEach(mapCoords => {
+            // console.log('hej', mapCoords, coords);
+            // console.log(mapCoords[0] == coords[0]);
+
+            if(mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) {
+                return false;
+                
+            }
+        })
+        return true;
+    })
+    check();
     
     render(shapePosition);
+}
 }
 
 function moveToPreviousPosition(previousPosition) {
@@ -310,7 +415,9 @@ function check() {
         shapePosition = [];
         render(testMap);
         setActualShape();
+        rotatePosition = 0;
         createShapeCoords(actualShape);
+        centerNewShape();
         render(shapePosition);
         checkRow();
         isGameOver();
