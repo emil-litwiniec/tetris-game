@@ -2,31 +2,42 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 window.addEventListener('keydown', e => {
-    console.log(e.keyCode);
     switch(e.keyCode) {
         case 37: 
             e.preventDefault();
+            if(!isGameOver){
             moveLeft();
+            }
             break;     
         case 38:
         e.preventDefault();
+        if(!isGameOver){
             rotateShape();
+        }
             break;
         case 39:
         e.preventDefault();
+        if(!isGameOver){
             moveRight();
+        }
             break;
         case 40:
         e.preventDefault();
+        if(!isGameOver){
             moveDown();
+        }
             break;
         case 80:
         e.preventDefault();
+        if(isGameOver) {
+            playAgain();
+        }
             toggleOn();
             break;
         case 82: 
         e.preventDefault();
             resetGame();
+            playAgain();
             break;
     }
 })
@@ -148,8 +159,10 @@ const color2 = '#00B962';
 let shapePosition = [];
 let rotatePosition = 0;
 let actualShape;
-let score = 0;
+let score = 5;
 let highscore = 0;
+let previousHighScore = 0;
+let actualScore;
 
 ctx.beginPath();
 ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -207,12 +220,124 @@ function centerNewShape() {
     });
 }
 
+let isGameOver = false
 
-function isGameOver() {
-    if(testMap.some(coords => coords[1] === 0)) {
+function toggle(value) {
+    value = !value;
+}
+
+function gameOver() {
+    if(testMap.some(coords => coords[1] === 0 && testMap.length > 5)) {
         resetGame();
+        stop();
+        isGameOver = true;
+        gameOverScreen();
+
+        }
+
+    }
+
+function gameOverScreen() {
+
+    /// DRAW CANVAS BACKGROUND
+    ctx.beginPath();
+    ctx.rect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.fillStyle = color2;
+    ctx.fill();
+
+    /// DRAW RECTANGLE IN THE CENTER
+    const rX = (ctx.canvas.width - (ctx.canvas.width-50))/2; /// rectangle x
+    const rY = (ctx.canvas.height/1.5)/2; /// rectangle y
+    const rW = ctx.canvas.width - 50  ; /// rectangle width
+    const rH =  ctx.canvas.height - ctx.canvas.height/1.5 ; /// rectangle height
+
+    ctx.beginPath();
+    ctx.lineWidth = "4";
+    ctx.strokeStyle = color1;
+    ctx.rect( rX  , rY , rW , rH); 
+    ctx.stroke();
+    ctx.closePath();
+    // ctx.fillStyle = color1;
+
+    /// DRAW DARK DOTS ON THE RECTANGLE
+
+    let dD = 6; // dot's dimension
+
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx.fillRect(rX + 1, rY + 1, dD, dD);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(rX + rW - dD - 1,rY + 1, dD, dD);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(rX + rW - dD - 1,rY + rH - dD - 1, dD, dD);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = color1;
+    ctx. fillRect(rX + 1, rY + rH - dD - 1, dD, dD);
+    ctx.closePath();
+    // ctx.fillStyle = color2;
+
+    /// DRAW LIGHT DOTS ON THE RECTANGLE
+
+    ctx.beginPath();
+    ctx.fillStyle = color2;
+    ctx.fillRect(rX -3 , rY - 3, dD, dD);
+    ctx.closePath();
+    
+    ctx.beginPath();
+    ctx.fillStyle = color2;
+    ctx. fillRect(rX + rW - dD + 3, rY - 3, dD, dD);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = color2;
+    ctx. fillRect(rX + rW - dD + 3,rY + rH - dD + 3, dD, dD);
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.fillStyle = color2;
+    ctx. fillRect(rX - 3, rY + rH - dD + 3, dD, dD);
+    ctx.closePath();
+    ctx.fillStyle = color2;
+
+
+
+    if (highscore > previousHighScore ){
+
+        ctx.font = '   48px "VT323", monospace ';
+        ctx.fillStyle = color1;
+        ctx.fillText('GAME OVER', rX + 35, rY + 80);
+        
+        ctx.font = '   20px "VT323", monospace ';
+        ctx.fillStyle = '#d9ffe5';
+        ctx.fillText(`score: ${actualScore}  Highest score!`, rX + 33, rY + 130);
+
+        ctx.font = '   20px "VT323", monospace ';
+        ctx.fillStyle = '#d9ffe5';
+        ctx.fillText("press 'P' to play again", rX + 33, rY + 160);
+
+    } else {
+        ctx.font = '   48px "VT323", monospace ';
+        ctx.fillStyle = color1;
+        ctx.fillText('GAME OVER', rX + 35, rY + 80);
+        
+        ctx.font = '   20px "VT323", monospace ';
+        ctx.fillStyle = '#d9ffe5';
+        ctx.fillText(`score: ${actualScore}`, rX + 33, rY + 130);
+
+        ctx.font = '   20px "VT323", monospace ';
+        ctx.fillStyle = '#d9ffe5';
+        ctx.fillText("press 'P' to play again", rX + 33, rY + 160);
     }
 }
+
 
 function clearShape() {
     shapePosition.forEach(coords => {
@@ -438,7 +563,7 @@ function check() {
         centerNewShape();
         render(shapePosition);
         checkRow();
-        isGameOver();
+        gameOver();
     }
 
 }
@@ -493,7 +618,6 @@ function deleteFullRows() {
     render(shapePosition);
     render(testMap);
     score = score + (250 * scoreMultiplier);
-    console.log(`Your score is ${score}.`);
     updateScore();
 }
 
@@ -505,19 +629,33 @@ function clearCanvas() {
     ctx.fillStyle = color2;
 }
 
+function playAgain() {
+    if(shapePosition.length === 0 && testMap.length === 0) {
+        isGameOver = false;
+        clearCanvas();
+        createShapeCoords(actualShape);
+        centerNewShape();
+        render(shapePosition);
+        }
+}
+
+
 function resetGame() {
-    testMap = [];
-    shapePosition = [];
+    console.log('ey!');
     updateHighScore();
+    actualScore = JSON.parse(JSON.stringify(score));
+    // console.log(actualScore);
     score = 0;
+    console.log(actualScore);
     updateScore();
     clearCanvas();
     setActualShape();
     rotatePosition = 0;
-    createShapeCoords(actualShape);
-    centerNewShape();
-    render(shapePosition);
     checkRow();
+    testMap = [];
+    shapePosition = [];
+
+    
 }
 
 function drawDots(xp, yp) {
@@ -525,11 +663,8 @@ function drawDots(xp, yp) {
     let cYp = yp * step;
     
    
-    // ctx.beginPath();
     ctx.fillStyle = color1;
     ctx.fillRect(cXp, cYp, 4, 4);
-    // ctx.fillStyle = color;
-    // ctx.closePath();
     
     ctx.beginPath();
     ctx.fillStyle = color1;
@@ -568,11 +703,13 @@ render(testMap);
 
 const updateScore = () => {
     let scorePoints = document.querySelector('.score');
-    scorePoints.innerText = `score: ${score}`
+    scorePoints.innerText = `score: ${score}`;
+    // actualScore = score;
 }
 
 const updateHighScore = () => {
     let highScorePoints = document.querySelector('.highscore');
+    previousHighScore = highscore;
     if(score > highscore) {
     highscore = score;
     highScorePoints.innerText = `high score: ${highscore}`
@@ -593,7 +730,7 @@ let toggleOn = () => {
 
 let play = () => {
     
-    intervalId = setInterval(moveDown, 450);
+    intervalId = setInterval(moveDown, 400);
     updateScore();
     isOn = !isOn;
 }
@@ -601,5 +738,7 @@ let stop = () =>{
     clearInterval(intervalId);
     isOn = !isOn;
 };
+
+
 
 canvas.addEventListener('click', toggleOn);
