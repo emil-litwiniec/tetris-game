@@ -2,10 +2,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 
-
-
-
-//? -----------------    TETROMINOES -------------------- /// 
+/// -----------------    TETROMINOES -------------------- /// 
 
 const tShape = [[[0, 1, 0],
                 [1, 1, 1],
@@ -279,7 +276,6 @@ function drawDots(xp, yp) {
 function drawSquare(xp, yp, color) {
     let cXp = xp * step;
     let cYp = yp * step;
-    // ctx.beginPath();
     ctx.fillStyle = color;
     ctx. fillRect(cXp, cYp, sl, sl);
    
@@ -327,7 +323,6 @@ function gameOverScreen() {
     ctx.rect( rX  , rY , rW , rH); 
     ctx.stroke();
     ctx.closePath();
-    // ctx.fillStyle = color1;
 
     /// DRAW DARK DOTS ON THE RECTANGLE
 
@@ -352,7 +347,6 @@ function gameOverScreen() {
     ctx.fillStyle = color1;
     ctx. fillRect(rX + 1, rY + rH - dD - 1, dD, dD);
     ctx.closePath();
-    // ctx.fillStyle = color2;
 
     /// DRAW LIGHT DOTS ON THE RECTANGLE
 
@@ -631,7 +625,6 @@ let isBlockedSide = (direction) => {
     } else if (direction == 'left') {
         direction = -1;
     }
-    // const left = -1;
     let cont = false;
     shapePosition.forEach(coords => {
     testMap.forEach(mapCoords => {
@@ -687,7 +680,6 @@ function clearCanvas() {
 const updateScore = () => {
     let scorePoints = document.querySelector('.score');
     scorePoints.innerText = `score: ${score}`;
-    // actualScore = score;
 }
 
 const updateHighScore = () => {
@@ -802,5 +794,7 @@ window.addEventListener('keydown', e => {
             break;
     }
 })
-
 canvas.addEventListener('click', toggleOn);
+
+    resetGame();
+    playAgain();
