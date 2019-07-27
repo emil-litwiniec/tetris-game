@@ -24,8 +24,8 @@ Beware, desktop only!
 
 ## Screenshots
 
-<img src="readme_screenshots/screenshot_1.png" alt="Screenshot from Blogster Blog App" width="650"/>
-<img src="readme_screenshots/screenshot_1.png" alt="Screenshot from Blogster Blog App" width="650"/>
+<img src="screenshot_1.png" alt="Screenshot from tetris-game" width="650"/>
+<img src="screenshot_2.png" alt="Screenshot from tetris-game" width="650"/>
 
 
 ## Links
