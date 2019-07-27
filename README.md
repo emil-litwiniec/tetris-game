@@ -22,6 +22,11 @@ Try to destroy more than one row at once. With each additional row you will mult
 
 Beware, desktop only!
 
+## Screenshot
+
+![Screenshot from Tetris](screenshot_1.png)
+![Screenshot from Tetris](screenshot_2.png)
+
 
 ## Links
 
