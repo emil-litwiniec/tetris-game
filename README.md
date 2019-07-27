@@ -1,5 +1,5 @@
 
-# Minesweeper
+# Tetris
 
 Implementation of classic tetris game. Written entirely in Vanilla Javascript using Canvas API. 
 The styling is inspired by retro pixel games.
