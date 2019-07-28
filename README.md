@@ -30,7 +30,7 @@ Beware, desktop only!
 
 ## Links
 
-- Live: https://your.github.com/awesome-project/
+- Live: https://xenodochial-easley-a90af9.netlify.com/
 - Repository: https://github.com/EmilTheSadCat/tetris-game
 - My other games:
   - Minesweeper: https://github.com/EmilTheSadCat/minesweeper_game
