@@ -8,12 +8,13 @@ The styling is inspired by retro pixel games.
 
 
 ```shell
-git clone git@github.com:EmilTheSadCat/tetris-game.git
-cd tetris-game
-open index.html
+npm install
+
+npm start   <--- start development server
+
+npm run build   <--- build production bundle in ./dist directory
 ```
 
-Clone the repository and simply open index.html in your browser.
 
 Click on the board or press 'P' and the game will start!
 Controls instruction is displayed in the game.
