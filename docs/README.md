@@ -10,9 +10,9 @@ The styling is inspired by retro pixel games.
 ```shell
 npm install
 
-npm start   <--- start development server
+npm start   // <--- start development server
 
-npm run build   <--- build production bundle in ./dist directory
+npm run build   // <--- build production bundle in ./dist directory
 ```
 
 
