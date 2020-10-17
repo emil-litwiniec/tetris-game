@@ -1,8 +1,8 @@
-import { TetrisBoard } from './tetris';
+import Board from './Board';
 import Shape from './Shape';
+const board = Board.getInstance().board
 
 export function detectCollision(shapePosition, currentShape, rotatePosition) {
-    const board = TetrisBoard.getInstance().board
     let fakeMap = [...board];
 
     let fakePreviousPosition = [...shapePosition];

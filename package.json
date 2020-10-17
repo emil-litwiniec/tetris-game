@@ -1,7 +1,7 @@
 {
     "name": "tetris-game",
     "version": "1.0.0",
-    "description": "Implementation of classic tetris game. Written entirely in Vanilla Javascript using Canvas API.  The styling is inspired by retro pixel games.",
+    "description": "Implementation of classic tetris game. Written entirely in vanilla JavaScript using Canvas API. The styling is inspired by retro pixel games.",
     "main": "src/index.html",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
@@ -22,7 +22,7 @@
             "sourceMap": false
         }
     },
-    "author": "",
+    "author": "Emil Litwiniec",
     "license": "ISC",
     "bugs": {
         "url": "https://github.com/EmilTheSadCat/tetris-game/issues"

@@ -1,7 +1,7 @@
 
 # Tetris
 
-Implementation of classic tetris game. Written entirely in Vanilla Javascript using Canvas API. 
+Implementation of classic tetris game. Written entirely in vanilla JavaScript using Canvas API. 
 The styling is inspired by retro pixel games.
 
 ## Installing / Getting started

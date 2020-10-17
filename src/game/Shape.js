@@ -1,6 +1,6 @@
 import { detectCollision } from './collision';
 import Renderer from './Renderer';
-import { TetrisBoard } from './tetris';
+import Board from './Board';
 const renderer = Renderer.getInstance();
 
 function getRandomInt(max) {
@@ -8,10 +8,19 @@ function getRandomInt(max) {
 }
 
 export default class Shape {
+    static instance = null;
+
     constructor() {
         this.currentShape = null;
         this.rotatePosition = 0;
         this.position = [];
+    }
+
+    static getInstance() {
+        if (!Shape.instance) {
+            Shape.instance = new Shape();
+        }
+        return Shape.instance;
     }
 
     setCurrentShape = () => {
@@ -78,7 +87,7 @@ export default class Shape {
             this.createShapeCoords();
             this.position = Shape.moveToPreviousPosition(previousPosition, this.position);
             this.position.forEach((coords) => {
-                const board = TetrisBoard.getInstance().board;
+                const board = Board.getInstance().board;
                 board.forEach((mapCoords) => {
                     if (mapCoords[0] == coords[0] && mapCoords[1] == coords[1]) {
                         return false;
@@ -86,7 +95,7 @@ export default class Shape {
                 });
                 return true;
             });
-            TetrisBoard.getInstance().check();
+            Board.getInstance().check();
 
             renderer.render(this.position);
         }
@@ -113,7 +122,7 @@ export default class Shape {
         }
 
         renderer.render(this.position);
-        TetrisBoard.getInstance().check();
+        Board.getInstance().check();
     };
 
     moveLeft = () => {
@@ -129,7 +138,7 @@ export default class Shape {
         }
 
         renderer.render(this.position);
-        TetrisBoard.getInstance().check();
+        Board.getInstance().check();
     };
 
     moveDown = () => {
@@ -139,7 +148,7 @@ export default class Shape {
         });
 
         renderer.render(this.position);
-        TetrisBoard.getInstance().check();
+        Board.getInstance().check();
     };
 
     isBlockedSide = (direction) => {
@@ -150,7 +159,7 @@ export default class Shape {
         }
         let shouldContinue = false;
         this.position.forEach((coords) => {
-            const board = TetrisBoard.getInstance().board;
+            const board = Board.getInstance().board;
 
             board.forEach((mapCoords) => {
                 if (mapCoords[0] === coords[0] + direction && mapCoords[1] === coords[1]) {
